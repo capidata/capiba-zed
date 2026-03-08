@@ -1,0 +1,38 @@
+[package]
+name = "capiba-mcp"
+version = "0.1.0"
+edition = "2021"
+license = "LicençaÉticaCapiba"
+description = "Servidor MCP do protocolo Capiba para integração com Zed e outros clientes"
+repository = "https://github.com/capidata/capiba-zed"
+authors = ["CAPIDATA <github.com/capidata>"]
+
+[[bin]]
+name = "capiba-mcp"
+path = "src/main.rs"
+
+[dev-dependencies]
+rmcp = { version = "0.16.0", features = ["client", "transport-child-process"] }
+
+[dependencies]
+# MCP SDK oficial da Anthropic (Rust)
+rmcp = { version = "0.16.0", features = ["server", "transport-io"] }
+
+# Schema JSON para as tools
+schemars = "1"
+
+# Serialização
+serde = { version = "1", features = ["derive"] }
+
+# Async
+tokio = { version = "1", features = ["full"] }
+
+# Logs
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Leitura de arquivos de contexto (pacto, decisoes)
+anyhow = "1"
+
+# Prompts e constantes compartilhados com a extensão
+capiba-prompts = { path = "../prompts" }

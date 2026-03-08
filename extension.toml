@@ -1,0 +1,43 @@
+id = "capiba-zed"
+name = "Capiba"
+description = "Integração Claude + protocolo Capiba para o Zed"
+version = "0.1.0"
+authors = ["CAPIDATA <github.com/capidata>"]
+repository = "https://github.com/capidata/capiba-zed"
+license = "Licença Ética Capiba"
+
+[slash_commands.capiba-onboard]
+description = "Onboarding no ecossistema Capiba — apresenta o projeto e sugere primeiros passos"
+requires_argument = false
+
+[slash_commands.capiba-fase]
+description = "Guia uma das 5 fases: preparacao | desenvolvimento | garantia | entrega | consolidacao"
+requires_argument = true
+
+[slash_commands.capiba-historia]
+description = "Sessão para escrever história de contribuição: Como [quem], quero [o quê], para que [por quê]"
+requires_argument = false
+
+[slash_commands.capiba-ideia]
+description = "Sessão de ideação de nova feature ou solução para o ecossistema"
+requires_argument = false
+
+[slash_commands.capiba-revisar]
+description = "Revisão ética e técnica do código aberto contra os princípios do Capiba Core"
+requires_argument = false
+
+[slash_commands.capiba-teste]
+description = "Gera testes contextualizados no ecossistema Capiba para o código selecionado"
+requires_argument = false
+
+[slash_commands.capiba-compat]
+description = "Verifica compatibilidade com o protocolo Capiba Core e gera COMPAT.md"
+requires_argument = false
+
+[slash_commands.capiba-pr]
+description = "Gera descrição de PR com checklists técnico e ético do CONTRIBUTING.md"
+requires_argument = false
+
+[context_servers.capiba-mcp]
+command = "capiba-mcp"
+args = []

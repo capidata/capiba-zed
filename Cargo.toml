@@ -1,0 +1,25 @@
+[workspace]
+members = [".", "mcp-server", "prompts", "xtask"]
+resolver = "2"
+
+[package]
+name = "capiba-zed"
+version = "0.1.0"
+edition = "2021"
+license = "LicençaÉticaCapiba"
+description = "Integração Claude + protocolo Capiba para o Zed IDE"
+repository = "https://github.com/capidata/capiba-zed"
+authors = ["CAPIDATA <github.com/capidata>"]
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+zed_extension_api = "0.4"
+capiba-prompts = { path = "prompts" }
+
+# Ferramentas de desenvolvimento (não são deps de runtime)
+# Instalar com: cargo binstall --version <ver> <nome>
+# ou: cargo install <nome> --locked
+[workspace.metadata.tools]
+cargo-llvm-cov = "0.6"

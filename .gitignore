@@ -1,0 +1,22 @@
+# Build
+target/
+
+# Variáveis de ambiente (ANTHROPIC_API_KEY, CAPIBA_ROOT, etc.)
+.env
+.env.local
+.env.*.local
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Zed (configurações locais de workspace)
+.zed/settings.json

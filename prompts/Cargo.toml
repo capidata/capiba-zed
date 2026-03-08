@@ -1,0 +1,8 @@
+[package]
+name = "capiba-prompts"
+version = "0.1.0"
+edition = "2021"
+license = "LicençaÉticaCapiba"
+description = "Prompts e constantes de conteúdo da extensão Capiba para Zed"
+repository = "https://github.com/capidata/capiba-zed"
+authors = ["CAPIDATA <github.com/capidata>"]
