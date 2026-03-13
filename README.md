@@ -187,7 +187,7 @@ cargo llvm-cov -p capiba-mcp --html --open
 cargo llvm-cov -p capiba-mcp --summary-only
 ```
 
-Mínimo exigido: **90% de cobertura de linhas** (verificado no pre-commit).
+Mínimo exigido: **95% de cobertura de linhas** (verificado no pre-commit).
 
 ---
 

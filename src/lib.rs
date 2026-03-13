@@ -1,5 +1,9 @@
 mod prompts;
-use prompts::*;
+use prompts::{
+    PROMPT_COMPAT, PROMPT_FASE_1, PROMPT_FASE_2, PROMPT_FASE_3, PROMPT_FASE_4, PROMPT_FASE_5,
+    PROMPT_HISTORIA, PROMPT_IDEIA, PROMPT_ONBOARD_INSTRUCOES, PROMPT_ONBOARD_INTRO, PROMPT_PR,
+    PROMPT_REVISAR, PROMPT_TESTE,
+};
 
 use zed_extension_api::{
     self as zed, Result, SlashCommand, SlashCommandArgumentCompletion, SlashCommandOutput,
