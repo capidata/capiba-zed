@@ -191,6 +191,31 @@ Mínimo exigido: **90% de cobertura de linhas** (verificado no pre-commit).
 
 ---
 
+## Releases e Downloads
+
+Toda tag `v*` (ex: `v0.1.0`) dispara o workflow de Continuous Deployment que:
+
+1. Builda a extensão Zed em WASM
+2. Compila `capiba-mcp` para 6 plataformas:
+3. - `capiba-mcp-linux-aarch64` (ARM)
+   - `capiba-mcp-linux-x86_64` (Intel/AMD)
+   - `capiba-mcp-macos-aarch64` (ARM)
+   - `capiba-mcp-macos-x86_64` (Intel)
+   - `capiba-mcp-windows-aarch64.exe` (ARM)
+   - `capiba-mcp-windows-x86_64.exe` (Intel/AMD)
+3. Publica uma GitHub Release com todos os binários
+
+**Para criar um novo release:**
+
+```bash
+git tag v0.2.0
+git push origin v0.2.0
+```
+
+Os artefatos estarão disponíveis em [Releases](https://github.com/capidata/capiba-zed/releases).
+
+---
+
 ## Licença
 
 Distribuído sob a **Licença Ética Capiba** —

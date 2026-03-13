@@ -1,0 +1,136 @@
+name: CD
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  wasm:
+    name: Build extensão Zed (WASM)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-wasip1
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-wasm-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-wasm-cargo-
+
+      - name: Build extensão WASM
+        run: cargo build --release --target wasm32-wasip1 -p capiba-zed
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: capiba-zed-wasm
+          path: target/wasm32-wasip1/release/capiba_zed.wasm
+
+  mcp:
+    name: Build capiba-mcp (${{ matrix.artifact }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: aarch64-unknown-linux-gnu
+            artifact: capiba-mcp-linux-aarch64
+            bin: capiba-mcp
+            use_cross: true
+
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            artifact: capiba-mcp-linux-x86_64
+            bin: capiba-mcp
+            use_cross: false
+
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            artifact: capiba-mcp-macos-aarch64
+            bin: capiba-mcp
+            use_cross: false
+
+          - os: macos-13
+            target: x86_64-apple-darwin
+            artifact: capiba-mcp-macos-x86_64
+            bin: capiba-mcp
+            use_cross: false
+
+          - os: windows-latest
+            target: aarch64-pc-windows-msvc
+            artifact: capiba-mcp-windows-aarch64.exe
+            bin: capiba-mcp.exe
+            use_cross: true
+
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            artifact: capiba-mcp-windows-x86_64.exe
+            bin: capiba-mcp.exe
+            use_cross: false
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - uses: cross-rs/cross-action@v1
+        if: matrix.use_cross
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-${{ matrix.target }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-${{ matrix.target }}-cargo-
+
+      - name: Build capiba-mcp (cargo)
+        if: ${{ !matrix.use_cross }}
+        run: cargo build --release --target ${{ matrix.target }} -p capiba-mcp
+
+      - name: Build capiba-mcp (cross)
+        if: matrix.use_cross
+        run: cross build --release --target ${{ matrix.target }} -p capiba-mcp
+
+      - name: Preparar artefato (Unix)
+        if: runner.os != 'Windows'
+        run: cp target/${{ matrix.target }}/release/${{ matrix.bin }} ${{ matrix.artifact }}
+
+      - name: Preparar artefato (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: Copy-Item target/${{ matrix.target }}/release/${{ matrix.bin }} ${{ matrix.artifact }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: ${{ matrix.artifact }}
+
+  release:
+    name: GitHub Release
+    needs: [wasm, mcp]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: Criar release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/**
+          generate_release_notes: true
