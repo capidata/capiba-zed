@@ -55,7 +55,7 @@ git clone https://github.com/capidata/capiba-zed
 cd capiba-zed
 
 # Ativar o pre-commit hook
-git config core.hooksPath .githooks
+pip install pre-commit && pre-commit install
 
 # Instalar ferramentas de dev (cargo-llvm-cov e outras declaradas em Cargo.toml)
 cargo xtask install-tools

@@ -45,8 +45,8 @@ jobs:
           mkdir -p coverage
           cargo llvm-cov -p capiba-mcp --lcov --output-path coverage/lcov.info
 
-      - name: SonarCloud
-        uses: SonarSource/sonarcloud-github-action@master
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 

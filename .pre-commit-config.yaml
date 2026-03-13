@@ -1,0 +1,37 @@
+repos:
+  # Pre-commit framework hooks — várias linguagens e formatos
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-toml
+      - id: check-json
+      - id: check-merge-conflict
+      - id: mixed-line-ending
+        args: [--fix=lf]
+
+  # Hooks customizados do capiba-zed
+  - repo: local
+    hooks:
+      - id: cargo-fmt
+        name: cargo fmt
+        entry: cargo fmt --check
+        language: system
+        types: [rust]
+        pass_filenames: false
+
+      - id: cargo-clippy
+        name: cargo clippy (capiba-prompts + capiba-mcp)
+        entry: cargo clippy -p capiba-prompts -p capiba-mcp -- -D warnings
+        language: system
+        types: [rust]
+        pass_filenames: false
+
+      - id: cargo-llvm-cov
+        name: cargo llvm-cov (mínimo 95%)
+        entry: cargo llvm-cov -p capiba-mcp --summary-only
+        language: system
+        types: [rust]
+        pass_filenames: false

@@ -104,8 +104,8 @@ capiba-zed/
 ## Como buildar
 
 ```bash
-# 0. Ativar o pre-commit hook (uma vez por clone)
-git config core.hooksPath .githooks
+# 0. Configurar pre-commit hooks (uma vez por clone)
+pip install pre-commit && pre-commit install
 
 # 1. Target WASM (uma vez)
 rustup target add wasm32-wasip1
@@ -118,6 +118,11 @@ cargo build --release -p capiba-mcp
 
 # 4. Instalar no Zed como dev extension
 # Command Palette → "zed: install dev extension" → selecionar esta pasta
+```
+
+**Alternativa (hook bash):**
+```bash
+git config core.hooksPath .githooks
 ```
 
 ---
