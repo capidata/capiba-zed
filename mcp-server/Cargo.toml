@@ -1,6 +1,6 @@
 [package]
 name = "capiba-mcp"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 license = "LicençaÉticaCapiba"
 description = "Servidor MCP do protocolo Capiba para integração com Zed e outros clientes"

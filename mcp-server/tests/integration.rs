@@ -132,11 +132,11 @@ async fn integ_read_resource_uri_desconhecida_retorna_erro() {
 // ── list_prompts ──────────────────────────────────────────────────────────────
 
 #[tokio::test]
-async fn integ_list_prompts_retorna_quatro() {
+async fn integ_list_prompts_retorna_oito() {
     let root = setup_root("list_prompts");
     let svc = start_server(&root).await;
     let result = svc.peer().list_prompts(None).await.unwrap();
-    assert_eq!(result.prompts.len(), 4);
+    assert_eq!(result.prompts.len(), 8);
     fs::remove_dir_all(&root).unwrap();
 }
 

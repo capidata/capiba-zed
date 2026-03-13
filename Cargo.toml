@@ -4,7 +4,7 @@ resolver = "2"
 
 [package]
 name = "capiba-zed"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 license = "LicençaÉticaCapiba"
 description = "Integração Claude + protocolo Capiba para o Zed IDE"

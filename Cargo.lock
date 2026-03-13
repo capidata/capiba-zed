@@ -87,7 +87,7 @@ checksum = "1e748733b7cbc798e1434b6ac524f0c1ff2ab456fe201501e6497c8417a4fc33"
 
 [[package]]
 name = "capiba-mcp"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "anyhow",
  "capiba-prompts",
@@ -101,11 +101,11 @@ dependencies = [
 
 [[package]]
 name = "capiba-prompts"
-version = "0.1.0"
+version = "0.1.1"
 
 [[package]]
 name = "capiba-zed"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "capiba-prompts",
  "zed_extension_api",
@@ -1591,7 +1591,7 @@ checksum = "9edde0db4769d2dc68579893f2306b26c6ecfbe0ef499b013d731b7b9247e0b9"
 
 [[package]]
 name = "xtask"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "toml",
 ]

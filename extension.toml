@@ -1,12 +1,13 @@
-schema_version = 0
+schema_version = 1
 
 id = "capiba-zed"
 name = "Capiba"
 description = "Integração Claude + protocolo Capiba para o Zed"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["CAPIDATA <github.com/capidata>"]
 repository = "https://github.com/capidata/capiba-zed"
 license = "Licença Ética Capiba"
+
 
 [slash_commands.capiba-onboard]
 description = "Onboarding no ecossistema Capiba — apresenta o projeto e sugere primeiros passos"
@@ -41,5 +42,5 @@ description = "Gera descrição de PR com checklists técnico e ético do CONTRI
 requires_argument = false
 
 [context_servers.capiba-mcp]
-command = "capiba-mcp"
+command = "capiba-mcp-run"
 args = []

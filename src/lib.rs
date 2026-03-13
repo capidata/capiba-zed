@@ -24,7 +24,7 @@ impl zed::Extension for CapibaExtension {
     ) -> Result<Command> {
         match context_server_id.as_ref() {
             "capiba-mcp" => Ok(Command {
-                command: "capiba-mcp".to_string(),
+                command: find_capiba_mcp_run(),
                 args: vec![],
                 env: vec![],
             }),
@@ -162,6 +162,13 @@ fn completion(label: &str, desc: &str) -> SlashCommandArgumentCompletion {
         new_text: label.to_string(),
         run_command: true,
     }
+}
+
+fn find_capiba_mcp_run() -> String {
+    // std::env::var("HOME") retorna vazio no WASM do Zed.
+    // std::fs::metadata() é bloqueado pelo sandbox WASM.
+    // Usamos /usr/local/bin como path padrão — o build.sh instala o wrapper lá.
+    "/usr/local/bin/capiba-mcp-run".to_string()
 }
 
 zed::register_extension!(CapibaExtension);

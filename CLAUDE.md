@@ -36,7 +36,7 @@ Consumido por: desenvolvedores do ecossistema no Zed
 ```toml
 # dependências principais
 capiba-prompts = { path = "prompts" }  # fonte única de prompts
-zed_extension_api = "0.4"             # extensão WASM
+zed_extension_api = "0.5"             # extensão WASM
 rmcp = "0.16"                         # SDK MCP oficial
 serde + serde_json = "1"              # serialização MCP
 tokio = "1"                           # async no MCP server
@@ -101,7 +101,9 @@ capiba-zed/
 
 ---
 
-## Como buildar
+## Como buildar e instalar
+
+**Setup completo:**
 
 ```bash
 # 0. Configurar pre-commit hooks (uma vez por clone)
@@ -110,14 +112,49 @@ pip install pre-commit && pre-commit install
 # 1. Target WASM (uma vez)
 rustup target add wasm32-wasip1
 
-# 2. Extensão Zed
-cargo build --release --target wasm32-wasip1
+# 2. Instalar wasm-tools (uma vez) — necessário para converter WASM module em component
+cargo install wasm-tools
 
-# 3. Servidor MCP
-cargo build --release -p capiba-mcp
+# 3. Build + instalar servidor MCP (binário nativo + wrapper)
+./scripts/build.sh
+```
 
-# 4. Instalar no Zed como dev extension
-# Command Palette → "zed: install dev extension" → selecionar esta pasta
+**Instalar a extensão no Zed (slash commands):**
+
+O Zed não aceita WASM compilado externamente — a extensão **deve** ser instalada via command palette:
+
+```text
+zed: install dev extension
+```
+
+Rodar com o diretório `capiba-zed` aberto no Zed.
+
+**Configurar o MCP server globalmente (uma vez):**
+
+Adicione ao `~/.config/zed/settings.json` (Linux) ou `~/.config/zed/settings.json` (macOS):
+
+```json
+{
+  "context_servers": {
+    "capiba-mcp": {
+      "command": {
+        "path": "/usr/local/bin/capiba-mcp-run",
+        "args": []
+      }
+    }
+  }
+}
+```
+
+Isso faz o MCP funcionar em **qualquer repositório**, independente da extensão.
+
+**Usar slash commands em outros repositórios:**
+
+A extensão dev funciona apenas quando `capiba-zed` está no workspace ativo.
+Para usar em outros repos (ex: `capiba-core`), abra os dois no mesmo workspace:
+
+```text
+File > Add Folder to Project → selecione capiba-zed
 ```
 
 **Alternativa (hook bash):**
@@ -125,6 +162,17 @@ cargo build --release -p capiba-mcp
 ```bash
 git config core.hooksPath .githooks
 ```
+
+---
+
+## Limitações conhecidas de instalação
+
+| Limitação | Causa | Workaround |
+| --------- | ----- | ---------- |
+| `./scripts/install.sh` não ativa slash commands | Zed não aceita WASM externo | Usar `zed: install dev extension` |
+| `std::env::var("HOME")` vazio no WASM | Sandbox do Zed não expõe variáveis de ambiente | `context_server_command` usa `/usr/local/bin/capiba-mcp-run` |
+| rmcp bufferiza stdout sem flush | Limitação do rmcp 0.16 com tokio stdio | Wrapper com pipeline `tee` (`capiba-mcp-run`) |
+| Extensão dev só funciona com capiba-zed no workspace | Comportamento do Zed para extensões dev | Configurar MCP global via settings.json |
 
 ---
 
@@ -164,6 +212,18 @@ Quando o `capiba-core` existir, o resource será adicionado.
 **`CAPIBA_ROOT` como variável de ambiente**
 O MCP server detecta a raiz do repositório via `CAPIBA_ROOT`
 ou `CWD`. Isso permite uso em monorepos e workspaces aninhados.
+
+**Wrapper `capiba-mcp-run` para flush do stdout**
+O rmcp 0.16 com tokio stdio bufferiza o stdout sem flush automático. O Zed aguarda
+a resposta do `initialize` e dá timeout após 60s. Solução: wrapper shell com pipeline
+`tee` que força o flush entre processos. Instalado pelo `build.sh` em `~/.local/bin`
+e `/usr/local/bin`. Pendente para v0.2: investigar flush nativo no rmcp.
+
+**`context_server_command` usa `/usr/local/bin` como path fixo**
+No contexto WASM (wasm32-wasip1), `std::env::var("HOME")` retorna string vazia e
+`std::fs::metadata()` é bloqueado pelo sandbox. O path do wrapper é fixado em
+`/usr/local/bin/capiba-mcp-run` — instalado pelo `build.sh` com `sudo`.
+Alternativa para v0.2: usar API do Zed para descobrir o home do usuário.
 
 ---
 
