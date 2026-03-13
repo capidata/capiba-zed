@@ -140,6 +140,8 @@ Use `/capiba-fase <nome>` para guia de cada fase.
 - [ ] Slash commands testadas manualmente no Zed (`zed: install dev extension`)
 - [ ] `capiba_check_compat` rodado no código novo
 - [ ] Princípios invioláveis verificados (especialmente V — IA não age sem confirmação)
+- [ ] **MCP Agnóstico**: código não importa `anthropic`, `claude-api` ou SDKs de modelo específico
+- [ ] **Teste multi-cliente**: tool testado com pelo menos 2 clientes MCP (Claude + outro)
 
 ---
 
@@ -165,6 +167,50 @@ ou `CWD`. Isso permite uso em monorepos e workspaces aninhados.
 
 ---
 
+## Agnóstico de modelo — Implementação MCP pura
+
+`capiba-zed` **não depende de SDKs específicos de Claude ou Anthropic** — apenas do protocolo MCP v1.0 oficialmente publicado. Isso garante que:
+
+1. **O servidor funciona com qualquer cliente MCP**: Claude, Grok, clientes customizados, CLI
+2. **Nenhum lock-in de modelo**: quebras de compatibilidade do SDK Anthropic não afetam capiba-zed
+3. **Compatível com o Princípio II (Anti-colonial)**: ferramenta não fica dependente de extrator específico
+
+### Checklist de pureza MCP
+
+Ao modificar `mcp-server/`:
+
+- ✅ Usar apenas `rmcp` (SDK MCP oficial Rust)
+- ✅ Expor tools com `inputSchema` JSON-Schema completo
+- ✅ Nenhuma suposição sobre inteligência do cliente
+- ✅ Testar com múltiplos clientes (Claude + outro MCP client, mínimo)
+- ❌ Nunca importar `anthropic_sdk`, `claude-api`, ou equivalentes
+- ❌ Nunca acoplaria prompt à "inteligência" do modelo específico
+
+### Arquitetura de transporte
+
+```text
+┌─────────────────────────────────┐
+│   Clientes MCP                  │
+│   (Claude, Grok, CLI, custom)   │
+├─────────────────────────────────┤
+│   MCP via stdio (spec v1.0)      │  ← agnóstico
+├─────────────────────────────────┤
+│   capiba-mcp server (Rust)       │
+│   (rmcp 0.16, tokio, serde)      │  ← puro
+├─────────────────────────────────┤
+│   Capiba Protocol Engine         │
+│   (tools + resources)            │  ← lógica
+└─────────────────────────────────┘
+```
+
+O fluxo é unidirecional: cliente → stdio → server. Nada de callbacks para o modelo.
+
+### Evolução esperada
+
+Se a Anthropic descontinuar o `rmcp` ou se surgir alternativa oficial melhor, capiba-zed troca o SDK **mas não o protocolo** — MCP é público. Tools, resources, argumentos permanecem os mesmos.
+
+---
+
 ## Variáveis de ambiente
 
 | Variável            | Padrão | Uso                                           |
@@ -187,21 +233,29 @@ v0.1 — Estado atual (pós-revisão de escopo)
   [x] Prompts centralizados em capiba-prompts (fonte única)
   [x] Testes de fumaça no MCP server
 
-v0.2 — Quando capiba-core existir
-  [ ] Resource capiba://spec/core real
+v0.2 — Agnóstico de modelo + capiba-core
+  [ ] MCP agnóstico: remover qualquer import de anthropic/claude-api
+  [ ] Transporte stdio puro (spec v1.0, nenhum callback para modelo)
+  [ ] Resource capiba://spec/core real (quando capiba-core existir)
   [ ] capiba_check_compat com análise semântica real
   [ ] Resource capiba://delta para cálculo de δ efetivo
   [ ] /capiba-compat gerando COMPAT.md real contra módulos do Core
+  [ ] Teste multi-cliente: tools funcionando em Claude + Grok (ou CLI client)
+  [ ] Auditoria de agnóstico: verificar que rmcp 0.16 é a única dependência MCP
 
 v0.3 — Agent Skills
   [ ] Subagentes por fase (agente de preparação, de garantia, etc.)
   [ ] Integração com CapibaGov (criar issues e decisões via MCP)
   [ ] Suporte a múltiplos repositórios no mesmo workspace
+  [ ] Suporte a protocolos MCP alternativos (se spec evoluir)
+  [ ] Teste de compatibilidade: agent com múltiplos clientes MCP
 
 v1.0 — Publicação
   [ ] Publicar no Zed Extension Registry
   [ ] Documentação completa em pt-BR
   [ ] CLAUDE.md padronizado em todos os repos do ecossistema
+  [ ] Garantia de agnóstico: publicar conformance test suite público
+  [ ] Certificação MCP v1.0: verificação independente de pureza
 ```
 
 ---
