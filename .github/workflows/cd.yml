@@ -83,7 +83,7 @@ jobs:
         with:
           targets: ${{ matrix.target }}
 
-      - uses: cross-rs/cross-action@v1
+      - uses: taiki-e/install-action@cross
         if: matrix.use_cross
 
       - uses: actions/cache@v4
