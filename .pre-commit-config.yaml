@@ -12,6 +12,13 @@ repos:
       - id: mixed-line-ending
         args: [--fix=lf]
 
+  # Markdown lint
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.48.0
+    hooks:
+      - id: markdownlint
+        args: [--config, .markdownlint.yaml]
+
   # Hooks customizados do capiba-zed
   - repo: local
     hooks:

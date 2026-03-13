@@ -6,8 +6,8 @@ use prompts::{
 };
 
 use zed_extension_api::{
-    self as zed, Result, SlashCommand, SlashCommandArgumentCompletion, SlashCommandOutput,
-    SlashCommandOutputSection, Worktree,
+    self as zed, Command, ContextServerId, Project, Result, SlashCommand,
+    SlashCommandArgumentCompletion, SlashCommandOutput, SlashCommandOutputSection, Worktree,
 };
 
 struct CapibaExtension;
@@ -15,6 +15,21 @@ struct CapibaExtension;
 impl zed::Extension for CapibaExtension {
     fn new() -> Self {
         CapibaExtension
+    }
+
+    fn context_server_command(
+        &mut self,
+        context_server_id: &ContextServerId,
+        _project: &Project,
+    ) -> Result<Command> {
+        match context_server_id.as_ref() {
+            "capiba-mcp" => Ok(Command {
+                command: "capiba-mcp".to_string(),
+                args: vec![],
+                env: vec![],
+            }),
+            id => Err(format!("servidor MCP desconhecido: {id}")),
+        }
     }
 
     fn run_slash_command(

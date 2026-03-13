@@ -1,0 +1,32 @@
+default: true
+
+# Comprimento de linha — desabilitado (blocos de código e comandos longos são frequentes)
+MD013: false
+
+# Estilos de lista — permite tanto - quanto * e números
+MD004:
+  style: dash
+
+# Espaço após # no heading — garante consistência
+MD018: true
+
+# Múltiplos headings com o mesmo texto — permitido (ex: "Solução" em vários itens)
+MD024: false
+
+# Listas aninhadas — permite qualquer indentação
+MD007:
+  indent: 2
+
+# Inline HTML — não usado, mas não bloqueia
+MD033: false
+
+# Ênfase como heading — desabilitado (rodapés estilísticos usam _texto_)
+MD036: false
+
+# Alinhamento de tabelas — desabilitado (tabelas em texto plano são válidas)
+MD055: false
+MD056: false
+MD060: false
+
+# Primeiro heading deve ser H1 — obrigatório
+MD041: true

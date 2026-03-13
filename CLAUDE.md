@@ -15,7 +15,7 @@ Capiba como contexto vivo para o agente.
 
 ## Lugar no ecossistema
 
-```
+```text
 Camada:      Ferramental (não é IaaS/PaaS/SaaS — é infraestrutura de dev)
 Depende de:  .github/estatuto (Pacto Fundante)
              .github/decisoes (ledger público)
@@ -27,11 +27,11 @@ Consumido por: desenvolvedores do ecossistema no Zed
 
 ## Stack
 
-| Crate              | Target          | Função                                        |
-| ------------------ | --------------- | --------------------------------------------- |
-| `capiba-prompts`   | puro Rust       | Prompts e constantes compartilhados            |
-| `capiba-zed` (lib) | `wasm32-wasip1` | Extensão Zed — slash commands                 |
-| `capiba-mcp` (bin) | host nativo     | Servidor MCP — tools e resources              |
+| Crate              | Target          | Função                              |
+| ------------------ | --------------- | ----------------------------------- |
+| `capiba-prompts`   | puro Rust       | Prompts e constantes compartilhados |
+| `capiba-zed` (lib) | `wasm32-wasip1` | Extensão Zed — slash commands       |
+| `capiba-mcp` (bin) | host nativo     | Servidor MCP — tools e resources    |
 
 ```toml
 # dependências principais
@@ -47,7 +47,7 @@ anyhow = "1"                          # erros ergonômicos
 
 ## Estrutura
 
-```
+```text
 capiba-zed/
 ├── Cargo.toml              workspace (extensão + mcp-server + prompts)
 ├── extension.toml          manifesto Zed
@@ -92,12 +92,12 @@ capiba-zed/
 
 ## MCP resources disponíveis
 
-| URI                     | Conteúdo                                      |
-| ----------------------- | --------------------------------------------- |
-| `capiba://principios`   | Os 7 princípios invioláveis (embutidos)       |
-| `capiba://pacto`        | Pacto Fundante da CAPIDATA                    |
-| `capiba://contributing` | Processo de contribuição em 5 fases           |
-| `capiba://decisoes`     | Ledger público de decisões                    |
+| URI                     | Conteúdo                                |
+| ----------------------- | --------------------------------------- |
+| `capiba://principios`   | Os 7 princípios invioláveis (embutidos) |
+| `capiba://pacto`        | Pacto Fundante da CAPIDATA              |
+| `capiba://contributing` | Processo de contribuição em 5 fases     |
+| `capiba://decisoes`     | Ledger público de decisões              |
 
 ---
 
@@ -121,6 +121,7 @@ cargo build --release -p capiba-mcp
 ```
 
 **Alternativa (hook bash):**
+
 ```bash
 git config core.hooksPath .githooks
 ```
@@ -175,7 +176,7 @@ ou `CWD`. Isso permite uso em monorepos e workspaces aninhados.
 
 ## Roadmap
 
-```
+```text
 v0.1 — Estado atual (pós-revisão de escopo)
   [x] 8 slash commands das 5 fases
   [x] Leitura de contexto do worktree (CLAUDE.md, CONTRIBUTING)

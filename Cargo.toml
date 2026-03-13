@@ -15,7 +15,7 @@ authors = ["CAPIDATA <github.com/capidata>"]
 crate-type = ["cdylib"]
 
 [dependencies]
-zed_extension_api = "0.4"
+zed_extension_api = "0.5"
 capiba-prompts = { path = "prompts" }
 
 # Ferramentas de desenvolvimento (não são deps de runtime)
