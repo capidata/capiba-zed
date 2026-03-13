@@ -421,14 +421,11 @@ fn find_decisao(dir: &Path, id: u32) -> Option<String> {
     None
 }
 
-// ─── Main ─────────────────────────────────────────────────────────────────────
-// LCOV_EXCL_START — não testável sem servidor MCP ativo
+// ─── Flags ────────────────────────────────────────────────────────────────────
 
-#[tokio::main]
-async fn main() -> Result<()> {
-    let args: Vec<String> = std::env::args().collect();
-
-    // Verificar flags de ajuda e versão antes de iniciar o servidor
+/// Verifica se há flags de help ou version e executa a ação correspondente.
+/// Retorna `Some(())` se uma flag foi encontrada e processada, `None` caso contrário.
+fn check_help_version_flags(args: &[String]) -> Option<()> {
     for arg in &args[1..] {
         match arg.as_str() {
             "--help" | "-h" => {
@@ -445,14 +442,28 @@ async fn main() -> Result<()> {
                 println!();
                 println!("O servidor executa via stdio usando o protocolo MCP v2024-11-05");
                 println!("Normalmente usado pela extensão Zed capiba-zed.");
-                return Ok(());
+                return Some(());
             }
             "--version" | "-v" => {
                 println!("capiba-mcp 0.1.0");
-                return Ok(());
+                return Some(());
             }
             _ => {}
         }
+    }
+    None
+}
+
+// ─── Main ─────────────────────────────────────────────────────────────────────
+// LCOV_EXCL_START — não testável sem servidor MCP ativo
+
+#[tokio::main]
+async fn main() -> Result<()> {
+    let args: Vec<String> = std::env::args().collect();
+
+    // Verificar flags de ajuda e versão antes de iniciar o servidor
+    if check_help_version_flags(&args).is_some() {
+        return Ok(());
     }
 
     tracing_subscriber::fmt()
@@ -993,5 +1004,55 @@ mod tests {
             .await;
         assert!(r.contains("Fase detectada"));
         fs::remove_dir_all(&d).unwrap();
+    }
+
+    // ── check_help_version_flags ──────────────────────────────────────────
+
+    #[test]
+    fn flags_help_longo_retorna_some() {
+        let args = vec!["capiba-mcp".into(), "--help".into()];
+        assert!(check_help_version_flags(&args).is_some());
+    }
+
+    #[test]
+    fn flags_help_curto_retorna_some() {
+        let args = vec!["capiba-mcp".into(), "-h".into()];
+        assert!(check_help_version_flags(&args).is_some());
+    }
+
+    #[test]
+    fn flags_version_longo_retorna_some() {
+        let args = vec!["capiba-mcp".into(), "--version".into()];
+        assert!(check_help_version_flags(&args).is_some());
+    }
+
+    #[test]
+    fn flags_version_curto_retorna_some() {
+        let args = vec!["capiba-mcp".into(), "-v".into()];
+        assert!(check_help_version_flags(&args).is_some());
+    }
+
+    #[test]
+    fn flags_sem_help_ou_version_retorna_none() {
+        let args = vec!["capiba-mcp".into()];
+        assert!(check_help_version_flags(&args).is_none());
+    }
+
+    #[test]
+    fn flags_argumento_desconhecido_retorna_none() {
+        let args = vec!["capiba-mcp".into(), "--unknown".into()];
+        assert!(check_help_version_flags(&args).is_none());
+    }
+
+    #[test]
+    fn flags_help_ignorado_com_outros_argumentos() {
+        let args = vec!["capiba-mcp".into(), "--unknown".into(), "--help".into()];
+        assert!(check_help_version_flags(&args).is_some());
+    }
+
+    #[test]
+    fn flags_version_primeiro_argumento_retorna_some() {
+        let args = vec!["capiba-mcp".into(), "-v".into(), "extra".into()];
+        assert!(check_help_version_flags(&args).is_some());
     }
 }
