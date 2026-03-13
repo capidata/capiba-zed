@@ -426,6 +426,35 @@ fn find_decisao(dir: &Path, id: u32) -> Option<String> {
 
 #[tokio::main]
 async fn main() -> Result<()> {
+    let args: Vec<String> = std::env::args().collect();
+
+    // Verificar flags de ajuda e versão antes de iniciar o servidor
+    for arg in &args[1..] {
+        match arg.as_str() {
+            "--help" | "-h" => {
+                println!("capiba-mcp — Servidor MCP do protocolo Capiba");
+                println!();
+                println!("Uso: capiba-mcp [OPÇÕES]");
+                println!();
+                println!("Opções:");
+                println!("  --help, -h       Mostrar esta mensagem de ajuda");
+                println!("  --version, -v    Mostrar versão");
+                println!();
+                println!("Variáveis de ambiente:");
+                println!("  CAPIBA_ROOT      Raiz do repositório (padrão: diretório atual)");
+                println!();
+                println!("O servidor executa via stdio usando o protocolo MCP v2024-11-05");
+                println!("Normalmente usado pela extensão Zed capiba-zed.");
+                return Ok(());
+            }
+            "--version" | "-v" => {
+                println!("capiba-mcp 0.1.0");
+                return Ok(());
+            }
+            _ => {}
+        }
+    }
+
     tracing_subscriber::fmt()
         .with_writer(std::io::stderr)
         .with_env_filter(

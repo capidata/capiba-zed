@@ -20,3 +20,6 @@ target/
 
 # Zed (configurações locais de workspace)
 .zed/settings.json
+
+# capiba-mcp
+*.wasm

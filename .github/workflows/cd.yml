@@ -10,13 +10,13 @@ jobs:
     name: Build extensão Zed (WASM)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.2.0
 
       - uses: dtolnay/rust-toolchain@stable
         with:
           targets: wasm32-wasip1
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@v4.2.0
         with:
           path: |
             ~/.cargo/registry
@@ -28,7 +28,7 @@ jobs:
       - name: Build extensão WASM
         run: cargo build --release --target wasm32-wasip1 -p capiba-zed
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4.2.0
         with:
           name: capiba-zed-wasm
           path: target/wasm32-wasip1/release/capiba_zed.wasm
@@ -55,12 +55,6 @@ jobs:
           - os: macos-latest
             target: aarch64-apple-darwin
             artifact: capiba-mcp-macos-aarch64
-            bin: capiba-mcp
-            use_cross: false
-
-          - os: macos-13
-            target: x86_64-apple-darwin
-            artifact: capiba-mcp-macos-x86_64
             bin: capiba-mcp
             use_cross: false
 
@@ -112,7 +106,7 @@ jobs:
         shell: pwsh
         run: Copy-Item target/${{ matrix.target }}/release/${{ matrix.bin }} ${{ matrix.artifact }}
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4.2.0
         with:
           name: ${{ matrix.artifact }}
           path: ${{ matrix.artifact }}
@@ -124,7 +118,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v4.2.0
         with:
           path: artifacts
           merge-multiple: true

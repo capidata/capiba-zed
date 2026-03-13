@@ -160,6 +160,77 @@ capiba-zed/
 
 ---
 
+## Configurando o Zed
+
+### 1. Instalar a extensão como dev extension
+
+**Clonar o repositório:**
+```bash
+git clone https://github.com/capidata/capiba-zed
+cd capiba-zed
+```
+
+**No Zed:**
+1. Abrir `Command Palette` (`Cmd+Shift+P` ou `Ctrl+Shift+P`)
+2. Digitar `zed: install dev extension`
+3. Selecionar a pasta `capiba-zed`
+4. Reiniciar o Zed
+
+### 2. Configurar ANTHROPIC_API_KEY
+
+**Em `~/.config/zed/settings.json` (Linux/macOS) ou `%APPDATA%\Zed\settings.json` (Windows):**
+
+```json
+{
+  "env": {
+    "ANTHROPIC_API_KEY": "seu-api-key-aqui"
+  }
+}
+```
+
+Ou via variável de ambiente do sistema:
+```bash
+export ANTHROPIC_API_KEY="seu-api-key-aqui"
+zed
+```
+
+### 3. Configurar capiba-mcp no Zed
+
+**Em `~/.config/zed/settings.json`:**
+
+```json
+{
+  "assistant": {
+    "default_model": {
+      "provider": "anthropic",
+      "model": "claude-3-5-sonnet-20241022"
+    }
+  }
+}
+```
+
+Se o `capiba-mcp` estiver instalado em `/usr/local/bin/capiba-mcp`, o Zed o encontrará automaticamente via a extensão.
+
+Se instalou em local customizado, configure em `extension.toml`:
+```toml
+[context_servers.capiba-mcp]
+command = "/caminho/completo/capiba-mcp"
+args = []
+```
+
+### 4. Usar a extensão
+
+**No Zed, abra qualquer repositório do ecossistema Capiba e:**
+
+1. Pressione `Cmd+?` (macOS) ou `Ctrl+?` (Linux/Windows) para abrir o Assistant
+2. Digite um dos slash commands:
+   - `/capiba-onboard` — Começar
+   - `/capiba-fase preparacao` — Guia da Fase 1
+   - `/capiba-historia` — Escrever história de contribuição
+   - `/capiba-revisar` — Revisar código
+
+---
+
 ## Contribuindo
 
 Este repositório segue o mesmo processo de contribuição de todo o ecossistema Capiba.
@@ -213,6 +284,66 @@ git push origin v0.2.0
 ```
 
 Os artefatos estarão disponíveis em [Releases](https://github.com/capidata/capiba-zed/releases).
+
+### Como instalar o `capiba-mcp`
+
+Baixe o binário correspondente ao seu sistema em [Releases](https://github.com/capidata/capiba-zed/releases) e torne-o executável.
+
+**Linux (x86_64):**
+```bash
+curl -L https://github.com/capidata/capiba-zed/releases/download/v0.1.0/capiba-mcp-linux-x86_64 -o capiba-mcp
+chmod +x capiba-mcp
+sudo mv capiba-mcp /usr/local/bin/
+```
+
+**Linux (ARM):**
+```bash
+curl -L https://github.com/capidata/capiba-zed/releases/download/v0.1.0/capiba-mcp-linux-aarch64 -o capiba-mcp
+chmod +x capiba-mcp
+sudo mv capiba-mcp /usr/local/bin/
+```
+
+**macOS (Apple Silicon — M1/M2/M3):**
+```bash
+curl -L https://github.com/capidata/capiba-zed/releases/download/v0.1.0/capiba-mcp-macos-aarch64 -o capiba-mcp
+chmod +x capiba-mcp
+sudo mv capiba-mcp /usr/local/bin/
+```
+
+**macOS (Intel):**
+```bash
+curl -L https://github.com/capidata/capiba-zed/releases/download/v0.1.0/capiba-mcp-macos-x86_64 -o capiba-mcp
+chmod +x capiba-mcp
+sudo mv capiba-mcp /usr/local/bin/
+```
+
+**Windows (x86_64):**
+```powershell
+# Baixar em %USERPROFILE%\Downloads:
+Invoke-WebRequest -Uri "https://github.com/capidata/capiba-zed/releases/download/v0.1.0/capiba-mcp-windows-x86_64.exe" `
+  -OutFile capiba-mcp.exe
+
+# Mover para PATH (ex: C:\Program Files\capiba):
+Move-Item capiba-mcp.exe "C:\Program Files\capiba\capiba-mcp.exe"
+```
+
+**Windows (ARM):**
+```powershell
+Invoke-WebRequest -Uri "https://github.com/capidata/capiba-zed/releases/download/v0.1.0/capiba-mcp-windows-aarch64.exe" `
+  -OutFile capiba-mcp.exe
+Move-Item capiba-mcp.exe "C:\Program Files\capiba\capiba-mcp.exe"
+```
+
+Verifique a instalação:
+```bash
+capiba-mcp --version
+# capiba-mcp 0.1.0
+
+capiba-mcp --help
+# Mostra como usar o servidor
+```
+
+**Nota:** `capiba-mcp` é um servidor MCP que roda via stdio. Não execute sem contexto — ele é usado automaticamente pela extensão Zed ou por clientes MCP compatíveis.
 
 ---
 
